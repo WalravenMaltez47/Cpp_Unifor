@@ -8,7 +8,6 @@ struct Node {
     
 };
  
-
 class List {
     public:
     Node *head;
