@@ -1,143 +1,125 @@
 #include <iostream>
+#include <memory>
 
 template <typename T>
-struct Node
-{
+struct Node {
     T data;
-    Node *next;
+    std::unique_ptr<Node<T>> next;
 
     Node(T data) : data(data), next(nullptr) {}
 };
 
 template <typename T>
-class LinkedList
-{
+class LinkedList {
 private:
-    Node<T> *head;
-    Node<T> *tail;
+    std::unique_ptr<Node<T>> head;
+    Node<T>* tail;
     int size;
 
 public:
     LinkedList() : head(nullptr), tail(nullptr), size(0) {}
+    ~LinkedList() = default; 
 
-    ~LinkedList()
+    void insert_At_Beginning(T data) 
     {
-        Node<T> *current = head;
-        while (current != nullptr)
+        auto newNode = std::make_unique<Node<T>>(data);
+
+        if (head == nullptr) 
         {
-            Node<T> *nextNode = current->next;
-            delete current;
-            current = nextNode;
+            tail = newNode.get();
+        } 
+        
+        else 
+        {
+            newNode->next = std::move(head);
         }
+
+        head = std::move(newNode);
+        size++;
     }
 
-    T insert_At_Beginning(T data)
+    void insert_At_End(T data) 
     {
-        Node<T> *newNode = new Node<T>(data);
+        auto newNode = std::make_unique<Node<T>>(data);
 
-        if (head == nullptr)
+        if (head == nullptr) 
         {
-            head = newNode;
-            tail = newNode;
-        }
-
-        else
+            head = std::move(newNode);
+            tail = head.get();
+        } 
+        
+        else 
         {
-            newNode->next = head;
-            head = newNode;
+            tail->next = std::move(newNode);
+            tail = tail->next.get();
         }
 
         size++;
-        return head->data;
     }
 
-    T insert_At_End(T data)
+    void insert_At_Position(T data, int position) 
     {
-        if (head == nullptr)
-        {
-            return insert_At_Beginning(data);
-        }
-
-        else
-        {
-            Node<T> *newNode = new Node<T>(data);
-
-            tail->next = newNode;
-            tail = newNode;
-        }
-
-        size++;
-        return tail->data;
-    }
-
-    void insert_At_Position(T data, int position)
-    {
-        if (position < 1 || position > size + 1)
+        if (position < 1 || position > size + 1) 
         {
             std::cerr << "Invalid position!" << std::endl;
-            return;
         }
 
-        Node<T> *newNode = new Node<T>(data);
+        auto newNode = std::make_unique<Node<T>>(data);
 
-        if (position == 1)
+        if (position == 1) 
         {
-            newNode->next = head;
-            head = newNode;
-            if (tail == nullptr)
+            newNode->next = std::move(head);
+            head = std::move(newNode);
+            if (tail == nullptr) 
             {
-                tail = newNode;
+                tail = head.get();
             }
-        }
-
-        else if (position == size + 1)
+        } 
+        
+        else 
         {
-            tail->next = newNode;
-            tail = newNode;
-        }
-        else
-        {
-            Node<T> *current = head;
-            for (int i = 1; i < position - 1; ++i)
+            Node<T>* current = head.get();
+            for (int i = 1; i < position - 1; ++i) 
             {
-                current = current->next;
+                current = current->next.get();
             }
-            newNode->next = current->next;
-            current->next = newNode;
+            newNode->next = std::move(current->next);
+            current->next = std::move(newNode);
+            if (current->next->next == nullptr) 
+            {
+                tail = current->next.get();
+            }
         }
 
         size++;
     }
 
-    int getSize() const
-    {
+    int getSize() const {
         return size;
     }
 
-    void print()
-    {
-        Node<T> *current = head;
+    void print() const {
+        Node<T> *current = head.get();
 
-        while (current != nullptr)
-        {
+        while (current != nullptr) {
             std::cout << current->data << " ";
-            current = current->next;
+            current = current->next.get();
         }
         std::cout << std::endl;
     }
 };
-    int main()
-    {
-        LinkedList<double> list;
-        list.insert_At_Beginning(10);
-        list.insert_At_Beginning(20);
-        list.insert_At_End(30);
-        list.insert_At_End(40);
-        list.insert_At_Position(25, 3);
 
-        std::cout << list.getSize() << std::endl;
+int main() {
+    LinkedList<double> list;
+    list.insert_At_Beginning(10);
+    list.insert_At_Beginning(20);
+    list.insert_At_End(30);
+    list.insert_At_End(40);
+    list.insert_At_Position(25, 3);
 
-        list.print();
-        
-        return 0;
-    }
+    std::cout << list.getSize() << std::endl;
+
+    list.print();
+
+    return 0;
+}
