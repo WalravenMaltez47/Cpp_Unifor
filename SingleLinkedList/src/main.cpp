@@ -14,22 +14,21 @@ class LinkedList {
 private:
     std::unique_ptr<Node<T>> head;
     Node<T>* tail;
-    int size;
+    size_t size;
 
 public:
     LinkedList() : head(nullptr), tail(nullptr), size(0) {}
-    ~LinkedList() = default; 
+    ~LinkedList() = default;
 
-    void insert_At_Beginning(T data) 
-    {
+    void insert_At_Beginning(T data) {
         auto newNode = std::make_unique<Node<T>>(data);
 
         if (head == nullptr) 
         {
             tail = newNode.get();
-        } 
-        
-        else 
+        }
+         
+        else
         {
             newNode->next = std::move(head);
         }
@@ -38,55 +37,39 @@ public:
         size++;
     }
 
-    void insert_At_End(T data) 
-    {
-        auto newNode = std::make_unique<Node<T>>(data);
-
-        if (head == nullptr) 
-        {
-            head = std::move(newNode);
-            tail = head.get();
-        } 
-        
-        else 
-        {
+    void insert_At_End(T data) {
+        if (head == nullptr) {
+            insert_At_Beginning(data);
+        } else {
+            auto newNode = std::make_unique<Node<T>>(data);
             tail->next = std::move(newNode);
             tail = tail->next.get();
+            size++;
         }
-
-        size++;
     }
 
-    void insert_At_Position(T data, int position) 
-    {
-        if (position < 1 || position > size + 1) 
-        {
+    void insert_At_Position(T data, int position) {
+        if (position < 1 || position > size + 1) {
             std::cerr << "Invalid position!" << std::endl;
+            return;
         }
 
         auto newNode = std::make_unique<Node<T>>(data);
 
-        if (position == 1) 
-        {
+        if (position == 1) {
             newNode->next = std::move(head);
             head = std::move(newNode);
-            if (tail == nullptr) 
-            {
+            if (tail == nullptr) {
                 tail = head.get();
             }
-        } 
-        
-        else 
-        {
+        } else {
             Node<T>* current = head.get();
-            for (int i = 1; i < position - 1; ++i) 
-            {
+            for (int i = 1; i < position - 1; ++i) {
                 current = current->next.get();
             }
             newNode->next = std::move(current->next);
             current->next = std::move(newNode);
-            if (current->next->next == nullptr) 
-            {
+            if (current->next->next == nullptr) {
                 tail = current->next.get();
             }
         }
@@ -94,12 +77,12 @@ public:
         size++;
     }
 
-    int getSize() const {
+    size_t getSize() const {
         return size;
     }
 
     void print() const {
-        Node<T> *current = head.get();
+        Node<T>* current = head.get();
 
         while (current != nullptr) {
             std::cout << current->data << " ";
