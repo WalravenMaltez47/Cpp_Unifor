@@ -5,8 +5,9 @@ template <typename T>
 struct Node {
     T data;
     std::unique_ptr<Node<T>> next;
+    std::unique_ptr<Node<T>> prev;
 
-    Node(T data) : data(data), next(nullptr) {}
+    Node(T data) : data(data), next(nullptr), prev(nullptr) {}
 };
 
 template <typename T>
@@ -20,7 +21,7 @@ public:
     LinkedList() : head(nullptr), tail(nullptr), size(0) {}
     ~LinkedList() = default;
 
-    void insert_At_Beginning(T data) {
+    void insert_At_Beginning (T data) {
         auto newNode = std::make_unique<Node<T>>(data);
 
         if (head == nullptr) 
@@ -30,6 +31,7 @@ public:
          
         else
         {
+            head->prev = newNode.get();
             newNode->next = std::move(head);
         }
 
@@ -42,6 +44,7 @@ public:
             insert_At_Beginning(data);
         } else {
             auto newNode = std::make_unique<Node<T>>(data);
+            newNode->prev = tail;
             tail->next = std::move(newNode);
             tail = tail->next.get();
             size++;
