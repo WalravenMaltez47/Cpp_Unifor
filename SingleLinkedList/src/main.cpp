@@ -61,9 +61,9 @@ class List
 
     void insert(T data, int pos) 
     {
-        if (pos > size || pos < 0)
+        if(pos < 0 || pos > size) 
         {
-            std::cout << "pos inválida" << std::endl;
+            std::cout << "erro" << std::endl;
         }
 
         else if (pos == 0)
@@ -77,22 +77,25 @@ class List
         }
         
         else
-        {  
+        {
             auto newNode = std::make_shared<Node<T>>(data);
-            auto current = head; // A
+            auto current = head;
 
             for (size_t i = 0; i < pos - 1; i++)
             {
                 current = current->next;
             }
-
+            
             // current == A
             // A <-> C   
             // A <-> newNode <-> C
-            newNode->next = current->next;  
+            newNode->next = current->next;
             newNode->prev = current;
-            current->next->prev = newNode;
-            
+            if (current->next != nullptr) {
+                current->next->prev = newNode;
+            }
+    
+            current->next = newNode;
             size++; 
         }
     }
