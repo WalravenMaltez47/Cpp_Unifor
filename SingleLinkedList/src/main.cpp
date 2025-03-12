@@ -79,16 +79,20 @@ class List
         else
         {  
             auto newNode = std::make_shared<Node<T>>(data);
-            auto current = head;
+            auto current = head; // A
 
             for (size_t i = 0; i < pos - 1; i++)
             {
                 current = current->next;
             }
-            
-            newNode->next = current->next;
+
+            // current == A
+            // A <-> C   
+            // A <-> newNode <-> C
+            newNode->next = current->next;  
             newNode->prev = current;
             current->next->prev = newNode;
+            
             size++; 
         }
     }
