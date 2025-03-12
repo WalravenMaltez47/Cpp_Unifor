@@ -19,7 +19,19 @@ void InsertionSort(std::vector<int>& arr) {
 
 int main() {
     std::vector<int> arr = {4,3,2,1};
+    
     InsertionSort(arr);
+    // 4, 4, 2, 1
+    // 3, 4, 2, 1
+
+    // 3, 4, 4, 1
+    // 3, 3, 4, 1
+    // 2, 3, 4, 1
+
+    // 2, 3, 4, 4
+    // 2, 3, 3, 4
+    // 2, 2, 3, 4
+   //* 1, 2, 3, 4 *
 
     for(int i = 0; i < arr.size(); i++) {
         std::cout << arr[i] << " ";
