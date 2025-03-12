@@ -5,56 +5,56 @@ template <typename T>
 struct Node 
 {
     T data;
-    std::unique_ptr<Node> right;
-    std::unique_ptr<Node> left;
+    std::unique_ptr<Node> rightSon;
+    std::unique_ptr<Node> leftSon;
 
-    Node(T data) : data(data), right(nullptr), left(nullptr) {}
+    Node(T data) : data(data), rightSon(nullptr), leftSon(nullptr) {}
 };
 
 
 template <typename T>
-void insert(std::unique_ptr<Node<T>> &root, T data) 
+void insert(std::unique_ptr<Node<T>> &dad, T data) 
 {
-    if(!root) 
+    if(!dad) 
     {
-        root = std::make_unique<Node<T>>(data);
+        dad = std::make_unique<Node<T>>(data);
     }
 
-    else if (data < root->data)
+    else if (data < dad->data)
     {
-       insert(root->left, data);
+       insert(dad->leftSon, data);
     }
 
-    else if(data > root->data)
+    else if(data > dad->data)
     {
-        insert(root->right, data);
+        insert(dad->rightSon, data);
     }
 }
 
 template <typename T>
-void order(std::unique_ptr<Node<T>> &root) 
+void sort(std::unique_ptr<Node<T>> &dad) 
 {
-    if (root)
+    if (dad)
     {
-        order(root->left);
-        std::cout << root->data << std::endl;
-        order(root->right);
+        sort(dad->leftSon);
+        std::cout << dad->data << std::endl;
+        sort(dad->rightSon);
     }
     
 }
 
 int main() 
 {
-    std::unique_ptr<Node<int>> root;
+    std::unique_ptr<Node<int>> dad;
 
-    insert(root, 10);
-    insert(root, 5);
-    insert(root, 15);
-    insert(root, 3);
-    insert(root, 7);
+    insert(dad, 10);
+    insert(dad, 5);
+    insert(dad, 15);
+    insert(dad, 3);
+    insert(dad, 7);
 
     std::cout << "Árvore percorrida em ordem:" << std::endl;
-    order(root);
+    sort(dad);
     std::cout << std::endl;
     return 0;
 }
